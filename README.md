@@ -40,6 +40,7 @@ To get started with the JIMI Chatbot, follow these steps:
     ```shell
     ./mvnw clean install
     ```
+
 4. Configure your database connection and openAI key by creating the [application.yml](src/main/resources/application.yml) file.
 
     ```yaml
@@ -100,70 +101,90 @@ To get started with the JIMI Chatbot, follow these steps:
 
 Configure the VM
 
-   ```shell
-   sudo apt-get update
-   sudo apt-get install apache2
-   sudo apt-get install git
-   sudo apt-get install openjdk-17-jdk
-   ```
+```shell
+sudo apt-get update
+sudo apt-get install apache2
+sudo apt-get install git
+sudo apt-get install openjdk-17-jdk
+```
 
 Add PATH:
 
-   ```bash
-   nano ~/.bashrc
-   # export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-   source ~/.bashrc
-   ```
+```bash
+nano ~/.bashrc
+# export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+source ~/.bashrc
+```
 
 Then clone the project
 
-   ```shell
-   git clone git@github.com:JIMIDevLab/jimi_api.git
-   cd jimi_api
-   ```
+```shell
+git clone git@github.com:JIMIDevLab/jimi_api.git
+cd jimi_api
+```
 
 You need to generate the .jar file to run in the VM.
 
-   ```shell
-   ./mvnw clean install
-   ```
+```shell
+./mvnw clean install
+```
+
 > Don't forget to add the application.yml file with your configuration as written in [Local installation](#local-installation)
-
-Then you launch the jar file in the server:
-   ```shell
-   nohup java -jar target/jimi-api.jar &
-   ```
     
-Add the Apache configuration ```/etc/apache2/sites-available/spring-config.conf```
+Add the Apache configuration `sudo nano /etc/apache2/sites-available/spring-config.conf`
 
-   ```txt
-   <VirtualHost *:80>
-   ServerName jimi.h.minet.net
-   ServerAdmin juliette.debono@telecom-sudparis.eu
-   
-       ProxyPass / http://localhost:8080/
-       ProxyPassReverse / http://localhost:8080/
-   
-       ErrorLog ${APACHE_LOG_DIR}/error.log
-       CustomLog ${APACHE_LOG_DIR}/access.log combined
-   </VirtualHost>
-   ```
+```txt
+<VirtualHost *:80>
+ServerName jimi.h.minet.net
+ServerAdmin juliette.debono@telecom-sudparis.eu
+
+    ProxyPass / http://localhost:8080/
+    ProxyPassReverse / http://localhost:8080/
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
 
 Run the configuration
 
-   ```shell
-   sudo a2ensite spring-config.conf
-   sudo a2enmod proxy
-   sudo a2enmod proxy_http
-   sudo a2enmod proxy_html
-   sudo systemctl restart apache2
-   ```
+```shell
+sudo a2ensite spring-config.conf
+sudo a2enmod proxy
+sudo a2enmod proxy_http
+sudo a2enmod proxy_html
+sudo systemctl restart apache2
+```
 
-To kill the processus, run
-   ```shell
-   ps aux | grep jimi-api.jar
-   kill 12345
-   ```
+Add the Service `sudo nano /etc/systemd/system/spring-service.service`
+
+```
+[Unit]
+Description=API Spring Boot du projet JIMI
+
+[Service]
+User=juliettedebono
+ExecStart=/usr/bin/java -jar /home/juliettedebono/jimi_api/target/jimi-api.jar &
+Restart=always
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Activate the service
+
+```bash
+sudo systemctl start spring-service
+sudo systemctl enable spring-service
+```
+
+To find the processus, run
+
+```shell
+ps aux | grep jimi-api.jar
+# kill 12345
+```
 
 ## SQL
 
