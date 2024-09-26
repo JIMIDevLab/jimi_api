@@ -138,8 +138,8 @@ Add the Apache configuration ```/etc/apache2/sites-available/spring-config.conf`
 
    ```txt
    <VirtualHost *:80>
-   ServerName jimi.h.minet.net
-   ServerAdmin juliette.debono@telecom-sudparis.eu
+   ServerName url.domain.com
+   ServerAdmin admin@email.fr
    
        ProxyPass / http://localhost:8080/
        ProxyPassReverse / http://localhost:8080/
@@ -239,7 +239,4 @@ To manipulate the database, you can run the sql file:
 This project is licensed under the MIT License. For more information, see the [LICENSE](LICENSE) file.
 
 ## Authors
-- Juliette Debono
-- Iris Marjollet
-- Margot Berton
-- Inès Kacer
+- Jul SQL
