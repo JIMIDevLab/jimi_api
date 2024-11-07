@@ -225,7 +225,7 @@ Then create the table with the sql code [create.sql](src/main/resources/create.s
 ## Usage
 The JIMI API handles requests made by the [JIMI Flutter App](https://github.com/JIMIDevLab/jimi_app) to interact with the database.
 
-For detailed API documentation and usage examples, refer to the Swagger Documentation when running the application locally or on the deployed API http://jimi-api.h.minet.net/swagger-ui/index.html#/.
+For detailed API documentation and usage examples, refer to the Swagger Documentation when running the application locally or on the deployed API http://jimi-api.julsql.fr/swagger-ui/index.html#/.
 
 ## ChatGPT
 
