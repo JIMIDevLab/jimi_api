@@ -1,8 +1,5 @@
 # JIMI API
 
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 ## Overview
 
 JIMI is a school project aimed at developing an application for managment of time and calendar, which includes the functionality to open chat with a chatbot that will handle the database of the calendar.
