@@ -1,8 +1,7 @@
 package com.tsp.jimi_api.global;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 /**
  * System prompts used to steer the LLM.
@@ -25,7 +24,8 @@ public final class Prompts {
      * recurrence, reminder) so JIMI can write a complete event to the user's
      * real calendar.
      */
-    public static String extraction() {
+    public static String extraction(final ZoneId zone) {
+        ZonedDateTime now = ZonedDateTime.now(zone);
         return """
                 You are Jimi, a friendly schedule assistant. You help the user manage
                 events directly on THEIR OWN connected calendar (Google, Apple/CalDAV,
@@ -125,7 +125,7 @@ public final class Prompts {
                   "language" to that language's ISO-639-1 code. Default to "en" only
                   if the language is genuinely unclear.
                 - Reply with valid JSON only. No prose outside the JSON object.
-                """.formatted(LocalDate.now(), LocalTime.now(), ZoneId.systemDefault());
+                """.formatted(now.toLocalDate(), now.toLocalTime(), zone);
     }
 
     /**
@@ -134,7 +134,8 @@ public final class Prompts {
      * Returns {"answer": "..."} so the service can hand the user a clean
      * human-readable summary built only from the supplied events.
      */
-    public static String agendaSummary() {
+    public static String agendaSummary(final ZoneId zone) {
+        ZonedDateTime now = ZonedDateTime.now(zone);
         return """
                 You are Jimi, a friendly schedule assistant. The user asked about
                 their calendar and you have just been given the relevant events in the
@@ -163,6 +164,6 @@ public final class Prompts {
                 {
                   "answer": "..."
                 }
-                """.formatted(LocalDate.now(), LocalTime.now());
+                """.formatted(now.toLocalDate(), now.toLocalTime());
     }
 }
