@@ -20,11 +20,17 @@ CREATE is written directly (low-risk, reversible). EDIT/DELETE return
 touched after the user confirms via `POST /chat/confirm`, which acts on the
 recorded event ids **without re-consulting the LLM**. See `ChatService`.
 
-> Migration in progress: PR #1 landed the provider abstraction + confirmation
-> flow. PR #2 (branch `feat/google-oauth-provider`) adds OAuth account linking
-> (encrypted tokens, PKCE) + `GoogleCalendarProvider`, so Google users get a
-> live calendar. PR #3 (branch `feat/caldav-provider`) adds the CalDAV provider
-> (Apple iCloud / Fastmail / Nextcloud). Microsoft (PR #4) comes next, then the app.
+> Migration in progress (stacked PRs): PR #1 = provider abstraction +
+> confirmation flow. PR #2 (`feat/google-oauth-provider`) = OAuth linking +
+> `GoogleCalendarProvider` (validated live). PR #3 (`feat/caldav-provider`) =
+> CalDAV provider (Apple iCloud / Fastmail / Nextcloud). PR #4
+> (`feat/microsoft-graph-provider`) = `MicrosoftCalendarProvider` over Graph +
+> `/connect/microsoft` OAuth, reusing `OAuthStateCodec`/`TokenCipher`/
+> `CalendarAccount`; Microsoft owns its token refresh in `MicrosoftTokenStore`
+> (Google's stays in `CalendarAccountService`), recurrence not mapped yet. Then
+> the app.
+>
+> Per-provider setup guides live in `docs/` (google / microsoft / caldav).
 >
 > **OAuth/Google:** see `docs/google-calendar-setup.md`. Tokens are stored
 > AES-256-GCM encrypted (`TokenCipher`, key `TOKEN_ENCRYPTION_KEY`); only the
@@ -43,6 +49,13 @@ recorded event ids **without re-consulting the LLM**. See `ChatService`.
 > `services/calendar/caldav/CalDavICalMapper` (pure, unit-tested); CRUD uses
 > `RestTemplate` with PROPFIND/REPORT/PUT/DELETE.
 > **No schema change** — reuses the `calendar_account` table.
+>
+> **Microsoft:** see `docs/microsoft-calendar-setup.md`. OAuth (Entra ID), scope
+> `Calendars.ReadWrite`, via Graph (`/me/calendarView`, `/me/events`). Token
+> refresh lives in `MicrosoftTokenStore` (not `CalendarAccountService`).
+> Endpoints in `MicrosoftConnectController`: `GET /connect/microsoft`,
+> `GET /oauth/microsoft/callback`, `DELETE /connect/microsoft`. Recurrence not
+> mapped (Graph uses structured `patternedRecurrence`, not RRULE).
 
 ## Build / run
 
